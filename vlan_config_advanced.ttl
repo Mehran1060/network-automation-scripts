@@ -1,0 +1,37 @@
+; Tera Term Macro برای پیکربندی چندین VLAN روی یک سوئیچ
+host = '192.168.1.2'
+port = '22'
+username = 'admin'
+password = 'password'
+
+; لیست VLAN ها به صورت: VLAN ID, VLAN Name
+vlan_list = '10,Sales;20,Engineering;30,HR'
+
+connect '/ssh2 /auth=password /user=' + username + ' /passwd=' + password + ' ' + host + ':' + port
+wait 'login successful'
+
+sendln 'enable'
+wait '#'
+
+sendln 'configure terminal'
+wait '(config)#'
+
+split(vlan_list, ";") ; جدا کردن VLAN ها با سمی‌کالن
+for i 0 to splitcount - 1
+    vlan_data = item(i)
+    split(vlan_data, ",")
+    vlan_id = item(0)
+    vlan_name = item(1)
+    
+    sendln 'vlan ' + vlan_id
+    wait '(config-vlan)#'
+    sendln 'name ' + vlan_name
+    wait '(config-vlan)#'
+    
+    sendln 'exit'
+    wait '(config)#'
+next
+
+sendln 'exit'
+wait '#'
+disconnect
