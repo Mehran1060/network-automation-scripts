@@ -5,6 +5,8 @@ This repository contains scripts for automating network configurations using Ter
 ## Features
 - Automate OSPF configuration on routers
 - Batch configuration of IP addresses on multiple interfaces
+- Configure VLANs on switches
+- Configure static routes on routers
 - Secure and efficient network management
 
 ## Requirements
@@ -12,6 +14,8 @@ This repository contains scripts for automating network configurations using Ter
 
 ## Usage
 1. Clone the repository:
+   ```sh
+   git clone https://github.com/Mehran1060/network-automation-scripts.git
 2. Open Tera Term and load the desired macro script.
 
 ## Examples
