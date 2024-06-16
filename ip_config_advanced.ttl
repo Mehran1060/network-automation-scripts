@@ -1,0 +1,38 @@
+; Tera Term Macro برای پیکربندی چندین IP Address روی یک روتر
+host = '192.168.1.1'
+port = '22'
+username = 'admin'
+password = 'password'
+
+; لیست اینترفیس ها و آدرس های IP به صورت: Interface, IP Address, Subnet Mask
+interface_list = 'GigabitEthernet0/1,192.168.10.1,255.255.255.0;GigabitEthernet0/2,192.168.20.1,255.255.255.0'
+
+connect '/ssh2 /auth=password /user=' + username + ' /passwd=' + password + ' ' + host + ':' + port
+wait 'login successful'
+
+sendln 'enable'
+wait '#'
+
+sendln 'configure terminal'
+wait '(config)#'
+
+split(interface_list, ";") ; جدا کردن اینترفیس ها با سمی‌کالن
+for i 0 to splitcount - 1
+    interface_data = item(i)
+    split(interface_data, ",")
+    interface = item(0)
+    ip_address = item(1)
+    subnet_mask = item(2)
+    
+    sendln 'interface ' + interface
+    wait '(config-if)#'
+    sendln 'ip address ' + ip_address + ' ' + subnet_mask
+    wait '(config-if)#'
+    
+    sendln 'exit'
+    wait '(config)#'
+next
+
+sendln 'exit'
+wait '#'
+disconnect
