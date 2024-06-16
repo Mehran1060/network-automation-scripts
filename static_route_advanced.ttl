@@ -1,0 +1,33 @@
+; Tera Term Macro برای پیکربندی چندین Static Route روی یک روتر
+host = '192.168.1.1'
+port = '22'
+username = 'admin'
+password = 'password'
+
+; لیست مسیرها به صورت: Destination Network, Subnet Mask, Next Hop
+route_list = '192.168.20.0,255.255.255.0,192.168.10.2;192.168.30.0,255.255.255.0,192.168.10.3'
+
+connect '/ssh2 /auth=password /user=' + username + ' /passwd=' + password + ' ' + host + ':' + port
+wait 'login successful'
+
+sendln 'enable'
+wait '#'
+
+sendln 'configure terminal'
+wait '(config)#'
+
+split(route_list, ";") ; جدا کردن مسیرها با سمی‌کالن
+for i 0 to splitcount - 1
+    route_data = item(i)
+    split(route_data, ",")
+    destination_network = item(0)
+    subnet_mask = item(1)
+    next_hop = item(2)
+    
+    sendln 'ip route ' + destination_network + ' ' + subnet_mask + ' ' + next_hop
+    wait '(config)#'
+next
+
+sendln 'exit'
+wait '#'
+disconnect
