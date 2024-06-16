@@ -1,0 +1,31 @@
+; Tera Term Macro برای پیکربندی BGP روی یک روتر
+host = '192.168.1.1'
+port = '22'
+username = 'admin'
+password = 'password'
+
+connect '/ssh2 /auth=password /user=' + username + ' /passwd=' + password + ' ' + host + ':' + port
+wait 'login successful'
+
+sendln 'enable'
+wait '#'
+
+sendln 'configure terminal'
+wait '(config)#'
+
+sendln 'router bgp 65001'
+wait '(config-router)#'
+
+sendln 'neighbor 192.168.2.1 remote-as 65002'
+wait '(config-router)#'
+sendln 'neighbor 192.168.2.1 description Peer-1'
+wait '(config-router)#'
+
+sendln 'network 192.168.10.0 mask 255.255.255.0'
+wait '(config-router)#'
+
+sendln 'exit'
+wait '(config)#'
+sendln 'exit'
+wait '#'
+disconnect
